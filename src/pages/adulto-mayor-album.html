@@ -1,0 +1,45 @@
+<!-- 
+  PANTALLA: Álbum de Recuerdos del Adulto Mayor
+  Álbum compartido con el voluntario
+-->
+<div id="adulto-mayor-album" class="page-container hidden">
+  <div class="page-header">
+    <h1 class="page-title">Álbum de Recuerdos</h1>
+    <p class="page-subtitle">Comparte momentos especiales con tu acompañante</p>
+  </div>
+
+  <div class="album-container">
+    <!-- Botón para agregar foto -->
+    <button id="add-photo-btn" class="btn-secondary btn-large">
+      <span>➕</span> Agregar foto
+    </button>
+
+    <!-- Grid de fotos -->
+    <div id="album-grid" class="album-grid">
+      <div class="album-empty-state">
+        <p>Tu álbum está vacío</p>
+        <p class="album-empty-hint">Agrega fotos para compartir momentos especiales</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input de archivo oculto -->
+  <input 
+    type="file" 
+    id="photo-input" 
+    accept="image/*" 
+    class="hidden"
+    multiple
+  />
+
+  <!-- Barra de navegación inferior -->
+  <div id="bottom-nav-container-album"></div>
+</div>
+
+
+
+
+
+
+
+

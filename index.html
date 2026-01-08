@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1FA6A3" />
+  <meta name="description" content="Conectando corazones, creando compañía" />
+  <title>PulseVision</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  
+  <!-- iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="PulseVision" />
+  
+  <!-- Fuentes: Inter para texto general, Poppins SemiBold para títulos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <img 
+        src="assets/images/colibri-logo.png" 
+        alt="Colibrí PulseVision" 
+        class="colibri-logo"
+        id="colibri-logo"
+      />
+      <p class="splash-message">Conectando corazones, creando compañía</p>
+    </div>
+  </div>
+
+  <!-- Pantalla de Selección de Rol (oculta inicialmente) -->
+  <div id="role-selection" class="role-selection hidden">
+    <div class="role-content">
+      <h1 class="welcome-title">¿Cómo te gustaría ingresar hoy?</h1>
+      <div class="role-buttons">
+        <button class="role-btn" data-role="adulto-mayor">
+          <span class="role-label">Adulto Mayor</span>
+        </button>
+        <button class="role-btn" data-role="universitario">
+          <span class="role-label">Universitario</span>
+        </button>
+        <button class="role-btn" data-role="docente">
+          <span class="role-label">Docente</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       FLUJO ADULTO MAYOR
+       ============================================ -->
+  
+  <!-- Registro del Adulto Mayor -->
+  <div id="adulto-mayor-registro" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Registro</h1>
+      <p class="page-subtitle">Completa tus datos para comenzar</p>
+    </div>
+
+    <form id="registro-form" class="registro-form">
+      <div class="form-group">
+        <label for="nombre" class="form-label">Nombre completo *</label>
+        <input 
+          type="text" 
+          id="nombre" 
+          name="nombre" 
+          class="form-input" 
+          placeholder="Ingresa tu nombre"
+          required
+          aria-required="true"
+        />
+        <span class="form-error" id="error-nombre"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="edad" class="form-label">Edad *</label>
+        <input 
+          type="number" 
+          id="edad" 
+          name="edad" 
+          class="form-input" 
+          placeholder="Tu edad"
+          min="60"
+          max="120"
+          required
+          aria-required="true"
+        />
+        <span class="form-error" id="error-edad"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="telefono" class="form-label">Teléfono de emergencia *</label>
+        <input 
+          type="tel" 
+          id="telefono" 
+          name="telefono" 
+          class="form-input" 
+          placeholder="Ej: 555-1234-5678"
+          required
+          aria-required="true"
+        />
+        <span class="form-help">Número de un familiar o contacto de confianza</span>
+        <span class="form-error" id="error-telefono"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="zona" class="form-label">Zona donde vives *</label>
+        <select 
+          id="zona" 
+          name="zona" 
+          class="form-input form-select"
+          required
+          aria-required="true"
+        >
+          <option value="">Selecciona tu zona</option>
+          <option value="norte">Zona Norte</option>
+          <option value="sur">Zona Sur</option>
+          <option value="este">Zona Este</option>
+          <option value="oeste">Zona Oeste</option>
+          <option value="centro">Centro</option>
+        </select>
+        <span class="form-error" id="error-zona"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Necesidades principales *</label>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="necesidades" value="compania" class="checkbox-input">
+            <span class="checkbox-text">Compañía y conversación</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="necesidades" value="medicamentos" class="checkbox-input">
+            <span class="checkbox-text">Recordatorio de medicamentos</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="necesidades" value="compras" class="checkbox-input">
+            <span class="checkbox-text">Ayuda con compras</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="necesidades" value="citas" class="checkbox-input">
+            <span class="checkbox-text">Acompañamiento a citas médicas</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="necesidades" value="tecnologia" class="checkbox-input">
+            <span class="checkbox-text">Ayuda con tecnología</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="necesidades" value="otras" class="checkbox-input">
+            <span class="checkbox-text">Otras necesidades</span>
+          </label>
+        </div>
+        <span class="form-error" id="error-necesidades"></span>
+      </div>
+
+      <button type="submit" class="btn-primary btn-large">
+        Completar registro
+      </button>
+    </form>
+  </div>
+
+  <!-- Home del Adulto Mayor -->
+  <div id="adulto-mayor-home" class="page-container hidden">
+    <!-- Colibrí aparecerá dinámicamente solo en momentos emocionales -->
+    <div id="colibri-guide-wrapper" class="colibri-guide-wrapper colibri-corner-bottom hidden"></div>
+
+    <div class="page-content">
+      <div class="home-header">
+        <h1 class="home-title">¿Qué tipo de ayuda necesitas?</h1>
+      </div>
+
+      <div class="help-types">
+        <button class="help-type-btn" data-help="compania">
+          <span class="help-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+          <span class="help-label">Compañía</span>
+        </button>
+        <button class="help-type-btn" data-help="medicamentos">
+          <span class="help-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="12" y1="9" x2="12" y2="15"></line></svg></span>
+          <span class="help-label">Medicamentos</span>
+        </button>
+        <button class="help-type-btn" data-help="compras">
+          <span class="help-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></span>
+          <span class="help-label">Compras</span>
+        </button>
+        <button class="help-type-btn" data-help="citas">
+          <span class="help-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><line x1="12" y1="8" x2="12" y2="12"></line><line x1="10" y1="10" x2="14" y2="10"></line></svg></span>
+          <span class="help-label">Citas médicas</span>
+        </button>
+        <button class="help-type-btn" data-help="tecnologia">
+          <span class="help-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></span>
+          <span class="help-label">Tecnología</span>
+        </button>
+        <button class="help-type-btn" data-help="otras">
+          <span class="help-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+          <span class="help-label">Otras</span>
+        </button>
+      </div>
+
+      <div class="main-action">
+        <button id="pedir-ayuda-btn" class="btn-primary btn-large btn-coral">
+          Confirmar solicitud
+        </button>
+      </div>
+
+      <div id="solicitudes-activas" class="solicitudes-section hidden">
+        <h2 class="section-title">Tus solicitudes activas</h2>
+        <div id="solicitudes-list" class="solicitudes-list"></div>
+      </div>
+    </div>
+
+    <div id="bottom-nav-container"></div>
+  </div>
+
+  <!-- Pantalla: Voluntarios Disponibles -->
+  <div id="voluntarios-disponibles" class="page-container hidden">
+    <div class="page-header">
+      <button id="volver-ayuda-btn" class="btn-back">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <span>Volver</span>
+      </button>
+      <h1 class="page-title" id="voluntarios-titulo">Personas disponibles para acompañarte</h1>
+      <p class="page-subtitle" id="voluntarios-subtitulo">Elige con quién te sientas más cómodo o cómoda</p>
+    </div>
+
+    <div class="page-content">
+      <div id="voluntarios-list" class="voluntarios-list">
+        <div class="voluntarios-empty">
+          <p>Por ahora no hay personas disponibles para este tipo de ayuda.</p>
+          <p class="voluntarios-empty-hint">Puedes intentar con otra opción o volver más tarde.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat del Adulto Mayor -->
+  <div id="adulto-mayor-chat" class="page-container hidden">
+    <div class="chat-header">
+      <h1 class="page-title">Chat</h1>
+      <div id="chat-voluntario-info" class="voluntario-info"></div>
+    </div>
+
+    <div class="chat-container">
+      <div id="chat-messages" class="chat-messages">
+        <div class="chat-empty-state">
+          <p>Aún no hay mensajes.</p>
+          <p class="chat-empty-hint">Puedes iniciar la conversación cuando quieras.</p>
+        </div>
+      </div>
+
+      <div id="chat-input-container" class="chat-input-container hidden">
+        <input 
+          type="text" 
+          id="chat-input" 
+          class="chat-input" 
+          placeholder="Escribe un mensaje..."
+          aria-label="Escribe un mensaje"
+        />
+        <button id="chat-send-btn" class="chat-send-btn" aria-label="Enviar mensaje">➤</button>
+      </div>
+    </div>
+
+    <div id="bottom-nav-container-chat"></div>
+  </div>
+
+  <!-- Álbum del Adulto Mayor -->
+  <div id="adulto-mayor-album" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Álbum de recuerdos</h1>
+      <p class="page-subtitle">Un espacio para guardar momentos compartidos</p>
+    </div>
+
+    <div class="album-container">
+      <button id="add-photo-btn" class="btn-secondary btn-large">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        <span>Agregar foto</span>
+      </button>
+
+      <div id="album-grid" class="album-grid">
+        <div class="album-empty-state">
+          <p>Aún no hay recuerdos aquí.</p>
+          <p class="album-empty-hint">Cuando compartas una foto, aparecerá en este espacio.</p>
+        </div>
+      </div>
+    </div>
+
+    <input 
+      type="file" 
+      id="photo-input" 
+      accept="image/*" 
+      class="hidden"
+      multiple
+    />
+
+    <div id="bottom-nav-container-album"></div>
+  </div>
+
+  <!-- Perfil del Adulto Mayor -->
+  <div id="adulto-mayor-perfil" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Mi Perfil</h1>
+    </div>
+
+    <div class="perfil-container">
+      <section class="perfil-section">
+        <h2 class="section-title">Información personal</h2>
+        <div class="perfil-info">
+          <div class="info-item">
+            <span class="info-label">Nombre:</span>
+            <span class="info-value" id="perfil-nombre">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Edad:</span>
+            <span class="info-value" id="perfil-edad">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Zona:</span>
+            <span class="info-value" id="perfil-zona">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Teléfono de emergencia:</span>
+            <span class="info-value" id="perfil-telefono">-</span>
+          </div>
+        </div>
+        <button id="editar-perfil-btn" class="btn-secondary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <span>Editar información</span>
+        </button>
+      </section>
+
+      <!-- Cerrar sesión -->
+      <section class="perfil-section">
+        <button id="cerrar-sesion-btn" class="btn-secondary btn-danger btn-large">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <span>Cerrar sesión</span>
+        </button>
+      </section>
+
+      <section class="perfil-section" id="acompanante-section">
+        <h2 class="section-title">Mi acompañante</h2>
+        <div id="acompanante-info" class="acompanante-card">
+          <div class="acompanante-empty">
+            <p>No tienes un acompañante asignado</p>
+            <p class="acompanante-hint">Solicita ayuda para que se te asigne un voluntario</p>
+          </div>
+        </div>
+        <div id="acompanante-actions" class="acompanante-actions hidden">
+          <button id="cambiar-acompanante-btn" class="btn-secondary">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <span>Cambiar acompañante</span>
+          </button>
+          <button id="anular-acompanante-btn" class="btn-secondary btn-danger">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Anular acompañante</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="perfil-section" id="calificacion-section">
+        <h2 class="section-title">¿Cómo fue tu experiencia?</h2>
+        <p class="page-subtitle" style="margin-bottom: 1rem;">Tu opinión nos ayuda a mejorar el acompañamiento.</p>
+        <div id="calificacion-form" class="calificacion-form hidden">
+          <div class="stars-rating">
+            <button class="star-btn" data-rating="1"><svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+            <button class="star-btn" data-rating="2"><svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+            <button class="star-btn" data-rating="3"><svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+            <button class="star-btn" data-rating="4"><svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+            <button class="star-btn" data-rating="5"><svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+          </div>
+          <textarea 
+            id="calificacion-comentario" 
+            class="form-textarea" 
+            placeholder="Comentario opcional..."
+            rows="3"
+          ></textarea>
+          <button id="enviar-calificacion-btn" class="btn-primary">Enviar calificación</button>
+        </div>
+        <div id="calificacion-empty" class="calificacion-empty">
+          <p>Califica a tu acompañante cuando hayas tenido una experiencia con él/ella</p>
+        </div>
+      </section>
+    </div>
+
+    <div id="bottom-nav-container-perfil"></div>
+  </div>
+
+  <!-- ============================================
+       FLUJO UNIVERSITARIO
+       ============================================ -->
+  
+  <!-- Registro del Universitario -->
+  <div id="universitario-registro" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Registro</h1>
+      <p class="page-subtitle">Completa tus datos para comenzar</p>
+    </div>
+
+    <form id="registro-universitario-form" class="registro-form">
+      <div class="form-group">
+        <label for="uni-nombre" class="form-label">Nombre completo *</label>
+        <input 
+          type="text" 
+          id="uni-nombre" 
+          name="nombre" 
+          class="form-input" 
+          placeholder="Ingresa tu nombre"
+          required
+          aria-required="true"
+        />
+        <span class="form-error" id="error-uni-nombre"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="universidad" class="form-label">Universidad *</label>
+        <select 
+          id="universidad" 
+          name="universidad" 
+          class="form-input form-select"
+          required
+          aria-required="true"
+        >
+          <option value="">Selecciona tu universidad</option>
+          <option value="UCSG">Universidad Católica de Santiago de Guayaquil</option>
+          <option value="UEES">Universidad Espíritu Santo (UEES)</option>
+          <option value="ECOTEC">Universidad ECOTEC</option>
+          <option value="UG">Universidad de Guayaquil</option>
+          <option value="UCG">Universidad Casa Grande</option>
+          <option value="UTEG">Universidad Tecnológica Empresarial de Guayaquil (UTEG)</option>
+          <option value="otra">Otra universidad</option>
+        </select>
+        <span class="form-help">Si tu universidad no está en la lista, selecciona "Otra universidad"</span>
+        <span class="form-error" id="error-universidad"></span>
+      </div>
+      
+      <!-- Campo para otra universidad (solo visible si se selecciona "otra") -->
+      <div class="form-group" id="otra-universidad-group" style="display: none;">
+        <label for="otra-universidad" class="form-label">Nombre de tu universidad *</label>
+        <input 
+          type="text" 
+          id="otra-universidad" 
+          name="otra-universidad" 
+          class="form-input" 
+          placeholder="Ingresa el nombre completo de tu universidad"
+        />
+        <span class="form-error" id="error-otra-universidad"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="carrera" class="form-label">Carrera *</label>
+        <input 
+          type="text" 
+          id="carrera" 
+          name="carrera" 
+          class="form-input" 
+          placeholder="Tu carrera o programa de estudios"
+          required
+          aria-required="true"
+        />
+        <span class="form-error" id="error-carrera"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="uni-telefono" class="form-label">Teléfono *</label>
+        <input 
+          type="tel" 
+          id="uni-telefono" 
+          name="telefono" 
+          class="form-input" 
+          placeholder="Ej: 555-1234-5678"
+          required
+          aria-required="true"
+        />
+        <span class="form-error" id="error-uni-telefono"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="uni-zona" class="form-label">Zona donde puedes ayudar *</label>
+        <select 
+          id="uni-zona" 
+          name="zona" 
+          class="form-input form-select"
+          required
+          aria-required="true"
+        >
+          <option value="">Selecciona tu zona</option>
+          <option value="norte">Zona Norte</option>
+          <option value="sur">Zona Sur</option>
+          <option value="este">Zona Este</option>
+          <option value="oeste">Zona Oeste</option>
+          <option value="centro">Centro</option>
+          <option value="todas">Todas las zonas</option>
+        </select>
+        <span class="form-error" id="error-uni-zona"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Habilidades de apoyo *</label>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="habilidades" value="compania" class="checkbox-input">
+            <span class="checkbox-text">Compañía y conversación</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="habilidades" value="medicamentos" class="checkbox-input">
+            <span class="checkbox-text">Recordatorio de medicamentos</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="habilidades" value="compras" class="checkbox-input">
+            <span class="checkbox-text">Ayuda con compras</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="habilidades" value="citas" class="checkbox-input">
+            <span class="checkbox-text">Acompañamiento a citas médicas</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="habilidades" value="tecnologia" class="checkbox-input">
+            <span class="checkbox-text">Ayuda con tecnología</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="habilidades" value="movilidad" class="checkbox-input">
+            <span class="checkbox-text">Apoyo en movilidad</span>
+          </label>
+        </div>
+        <span class="form-error" id="error-uni-habilidades"></span>
+      </div>
+
+      <button type="submit" class="btn-primary btn-large">
+        Completar registro
+      </button>
+    </form>
+  </div>
+
+  <!-- Home del Universitario -->
+  <div id="universitario-home" class="page-container hidden">
+    <!-- Colibrí aparecerá dinámicamente solo en momentos emocionales -->
+    <div id="colibri-guide-wrapper-uni" class="colibri-guide-wrapper colibri-corner-bottom hidden"></div>
+
+    <div class="page-content">
+      <div class="home-header">
+        <h1 class="home-title">Solicitudes de acompañamiento</h1>
+        <p class="home-subtitle">Personas que esperan apoyo</p>
+      </div>
+
+      <!-- Filtros por zona -->
+      <div class="filtros-section">
+        <label for="filtro-zona" class="form-label">Filtrar por zona:</label>
+        <select id="filtro-zona" class="form-input form-select">
+          <option value="todas">Todas las zonas</option>
+          <option value="norte">Zona Norte</option>
+          <option value="sur">Zona Sur</option>
+          <option value="este">Zona Este</option>
+          <option value="oeste">Zona Oeste</option>
+          <option value="centro">Centro</option>
+        </select>
+      </div>
+
+      <!-- Lista de solicitudes -->
+      <div id="solicitudes-universitario" class="solicitudes-list-uni">
+        <div class="solicitudes-empty-state">
+          <p>No hay solicitudes disponibles en este momento</p>
+          <p class="solicitudes-empty-hint">Las nuevas solicitudes aparecerán aquí</p>
+        </div>
+      </div>
+
+      <!-- Acompañamientos activos -->
+      <div id="acompanamientos-activos" class="acompanamientos-section hidden">
+        <h2 class="section-title">Mis acompañamientos activos</h2>
+        <div id="acompanamientos-list" class="acompanamientos-list"></div>
+      </div>
+    </div>
+
+    <div id="bottom-nav-container-uni"></div>
+  </div>
+
+  <!-- Rutas Seguras del Universitario -->
+  <div id="universitario-rutas" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Planifica tu recorrido con tranquilidad</h1>
+      <p class="page-subtitle">Visualiza las rutas más seguras para tus acompañamientos</p>
+    </div>
+
+    <div class="rutas-container">
+      <div class="rutas-info">
+        <p>Las rutas seguras te ayudan a planificar tus acompañamientos de manera más eficiente y segura.</p>
+      </div>
+
+      <div id="ruta-visualizacion" class="ruta-visualizacion">
+        <!-- Campo de búsqueda de destino -->
+        <div class="ruta-busqueda">
+          <label for="ruta-buscar-destino" class="form-label">Buscar destino:</label>
+          <input 
+            type="text" 
+            id="ruta-buscar-destino" 
+            class="form-input" 
+            placeholder="Ej: Hospital Central, Calle Principal 123..."
+            aria-label="Buscar destino en el mapa"
+          />
+          <button id="ruta-buscar-btn" class="btn-primary">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+            <span>Buscar</span>
+          </button>
+        </div>
+        
+        <!-- Iframe de Google Maps embebido -->
+        <div class="ruta-map">
+          <iframe 
+            id="ruta-map-iframe"
+            class="ruta-map-iframe"
+            src=""
+            width="100%" 
+            height="400" 
+            style="border:0; border-radius: 12px;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            aria-label="Mapa de Google Maps"
+          ></iframe>
+        </div>
+        
+        <div class="ruta-details">
+          <div class="ruta-detail-item">
+            <span class="ruta-detail-label">Distancia:</span>
+            <span class="ruta-detail-value" id="ruta-distancia">-</span>
+          </div>
+          <div class="ruta-detail-item">
+            <span class="ruta-detail-label">Tiempo estimado:</span>
+            <span class="ruta-detail-value" id="ruta-tiempo">-</span>
+          </div>
+          <div class="ruta-detail-item">
+            <span class="ruta-detail-label">Nivel de seguridad:</span>
+            <span class="ruta-detail-value" id="ruta-seguridad">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rutas-tips">
+        <div id="rutas-tips-carousel" class="rutas-tips-carousel">
+          <div class="tip-slide active">
+            <p>Antes de salir, revisa tu ruta y tu batería.</p>
+          </div>
+          <div class="tip-slide">
+            <p>Prefiere calles iluminadas y zonas transitadas.</p>
+          </div>
+          <div class="tip-slide">
+            <p>Comparte tu ubicación con alguien de confianza.</p>
+          </div>
+          <div class="tip-slide">
+            <p>Si tienes dudas, detente en un lugar seguro.</p>
+          </div>
+        </div>
+        <div class="rutas-tips-controls">
+          <button id="tip-prev" class="tip-control-btn" aria-label="Consejo anterior">‹</button>
+          <div class="tip-indicators"></div>
+          <button id="tip-next" class="tip-control-btn" aria-label="Consejo siguiente">›</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="bottom-nav-container-rutas"></div>
+  </div>
+
+  <!-- Álbum del Universitario -->
+  <div id="universitario-album" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Álbum Compartido</h1>
+      <p class="page-subtitle">Momentos compartidos con adultos mayores</p>
+    </div>
+
+    <div class="album-container">
+      <button id="add-photo-btn-uni" class="btn-secondary btn-large">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        <span>Agregar foto</span>
+      </button>
+
+      <div id="album-grid-uni" class="album-grid">
+        <div class="album-empty-state">
+          <p>Tu álbum compartido está vacío</p>
+          <p class="album-empty-hint">Agrega fotos de los momentos compartidos</p>
+        </div>
+      </div>
+    </div>
+
+    <input 
+      type="file" 
+      id="photo-input-uni" 
+      accept="image/*" 
+      class="hidden"
+      multiple
+    />
+
+    <div id="bottom-nav-container-album-uni"></div>
+  </div>
+
+  <!-- Puntaje del Universitario -->
+  <div id="universitario-puntaje" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Mi Puntaje</h1>
+      <p class="page-subtitle">Tu contribución a la comunidad</p>
+    </div>
+
+    <div class="puntaje-container">
+      <!-- Puntaje principal -->
+      <div class="puntaje-card">
+        <div class="puntaje-numero" id="puntaje-total">0</div>
+        <div class="puntaje-label">Puntos acumulados</div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="puntaje-stats">
+        <div class="stat-item">
+          <div class="stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-acompanamientos">0</div>
+            <div class="stat-label">Acompañamientos</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-calificacion">0.0</div>
+            <div class="stat-label">Calificación promedio</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-semanas">0</div>
+            <div class="stat-label">Semanas activas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial de actividades -->
+      <div class="puntaje-historial">
+        <h2 class="section-title">Historial de actividades</h2>
+        <div id="historial-list" class="historial-list">
+          <div class="historial-empty">
+            <p>Aún no tienes acompañamientos registrados.</p>
+            <p class="historial-empty-hint">Cuando completes uno, aparecerá aquí.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sistema de puntos -->
+      <div class="puntaje-sistema">
+        <h2 class="section-title">Sistema de puntos</h2>
+        <div class="puntos-info">
+          <div class="punto-item">
+            <span class="punto-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span class="punto-text">Acompañamiento completado: <strong>+10 puntos</strong></span>
+          </div>
+          <div class="punto-item">
+            <span class="punto-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+            <span class="punto-text">Calificación 5 estrellas: <strong>+puntos extra</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="bottom-nav-container-puntaje"></div>
+  </div>
+
+  <!-- Perfil del Universitario -->
+  <div id="universitario-perfil" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Mi Perfil</h1>
+    </div>
+
+    <div class="perfil-container">
+      <!-- Información académica -->
+      <section class="perfil-section">
+        <h2 class="section-title">Información académica</h2>
+        <div class="perfil-info">
+          <div class="info-item">
+            <span class="info-label">Nombre:</span>
+            <span class="info-value" id="perfil-uni-nombre">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Universidad:</span>
+            <span class="info-value" id="perfil-uni-universidad">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Carrera:</span>
+            <span class="info-value" id="perfil-uni-carrera">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Zona:</span>
+            <span class="info-value" id="perfil-uni-zona">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Teléfono:</span>
+            <span class="info-value" id="perfil-uni-telefono">-</span>
+          </div>
+        </div>
+        <button id="editar-perfil-uni-btn" class="btn-secondary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <span>Editar información</span>
+        </button>
+      </section>
+
+      <!-- Habilidades -->
+      <section class="perfil-section">
+        <h2 class="section-title">Habilidades de apoyo</h2>
+        <div id="perfil-habilidades" class="habilidades-list">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </section>
+
+      <!-- Acompañamientos actuales -->
+      <section class="perfil-section">
+        <h2 class="section-title">Acompañamientos actuales</h2>
+        <div id="perfil-acompanamientos-activos" class="acompanamientos-perfil">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </section>
+
+      <!-- Cerrar sesión -->
+      <section class="perfil-section">
+        <button id="cerrar-sesion-uni-btn" class="btn-secondary btn-danger btn-large">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <span>Cerrar sesión</span>
+        </button>
+      </section>
+    </div>
+
+    <div id="bottom-nav-container-perfil-uni"></div>
+  </div>
+
+  <!-- Chat del Universitario -->
+  <div id="universitario-chat" class="page-container hidden">
+    <div class="chat-header">
+      <h1 class="page-title">Chat</h1>
+      <div id="chat-adulto-info" class="voluntario-info">
+        <!-- Se llenará dinámicamente si hay adulto mayor asignado -->
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div id="chat-messages-uni" class="chat-messages">
+        <div class="chat-empty-state">
+          <p>Aún no hay mensajes.</p>
+          <p class="chat-empty-hint">Puedes iniciar la conversación cuando quieras.</p>
+        </div>
+      </div>
+
+      <div id="chat-input-container-uni" class="chat-input-container hidden">
+        <input 
+          type="text" 
+          id="chat-input-uni" 
+          class="chat-input" 
+          placeholder="Escribe un mensaje..."
+          aria-label="Escribe un mensaje"
+        />
+        <button id="chat-send-btn-uni" class="chat-send-btn" aria-label="Enviar mensaje">➤</button>
+      </div>
+    </div>
+
+    <div id="bottom-nav-container-chat-uni"></div>
+  </div>
+
+  <!-- ============================================
+       FLUJO DOCENTE
+       ============================================ -->
+  
+  <!-- Registro del Docente -->
+  <div id="docente-registro" class="page-container hidden">
+    <div class="page-header">
+      <h1 class="page-title">Registro Docente</h1>
+      <p class="page-subtitle">Acceso al panel administrativo</p>
+    </div>
+
+    <form id="registro-docente-form" class="registro-form">
+      <div class="form-group">
+        <label for="doc-nombre" class="form-label">Nombre completo *</label>
+        <input 
+          type="text" 
+          id="doc-nombre" 
+          name="nombre" 
+          class="form-input" 
+          placeholder="Ingresa tu nombre"
+          required
+          aria-required="true"
+        />
+        <span class="form-error" id="error-doc-nombre"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="doc-correo" class="form-label">Correo institucional *</label>
+        <input 
+          type="email" 
+          id="doc-correo" 
+          name="correo" 
+          class="form-input" 
+          placeholder="correo@universidad.edu"
+          required
+          aria-required="true"
+        />
+        <span class="form-help">Debe ser un correo institucional válido</span>
+        <span class="form-error" id="error-doc-correo"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="doc-universidad" class="form-label">Universidad *</label>
+        <select 
+          id="doc-universidad" 
+          name="universidad" 
+          class="form-input form-select"
+          required
+          aria-required="true"
+        >
+          <option value="">Selecciona tu universidad</option>
+          <option value="UCSG">Universidad Católica de Santiago de Guayaquil</option>
+          <option value="UEES">Universidad Espíritu Santo (UEES)</option>
+          <option value="ECOTEC">Universidad ECOTEC</option>
+          <option value="UG">Universidad de Guayaquil</option>
+          <option value="UCG">Universidad Casa Grande</option>
+          <option value="UTEG">Universidad Tecnológica Empresarial de Guayaquil (UTEG)</option>
+        </select>
+        <span class="form-error" id="error-doc-universidad"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="doc-password" class="form-label">Contraseña *</label>
+        <input 
+          type="password" 
+          id="doc-password" 
+          name="password" 
+          class="form-input" 
+          placeholder="Ingresa tu contraseña"
+          required
+          aria-required="true"
+          minlength="6"
+        />
+        <span class="form-help">Mínimo 6 caracteres</span>
+        <span class="form-error" id="error-doc-password"></span>
+      </div>
+
+      <button type="submit" class="btn-primary btn-large">
+        Completar registro
+      </button>
+    </form>
+  </div>
+
+  <!-- Panel Administrativo del Docente -->
+  <div id="docente-panel" class="page-container hidden">
+    <div class="docente-header">
+      <h1 class="page-title">Seguimiento de acompañamientos</h1>
+      <p class="page-subtitle">Supervisión y validación de actividades</p>
+    </div>
+
+    <div class="docente-container">
+      <!-- Resumen general -->
+      <section class="docente-section">
+        <h2 class="section-title">Resumen General</h2>
+        <div class="docente-stats-grid">
+          <div class="docente-stat-card">
+            <div class="docente-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+            <div class="docente-stat-info">
+              <div class="docente-stat-value" id="stat-total-estudiantes">0</div>
+              <div class="docente-stat-label">Estudiantes registrados</div>
+            </div>
+          </div>
+          <div class="docente-stat-card">
+            <div class="docente-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+            <div class="docente-stat-info">
+              <div class="docente-stat-value" id="stat-total-acompanamientos">0</div>
+              <div class="docente-stat-label">Acompañamientos totales</div>
+            </div>
+          </div>
+          <div class="docente-stat-card">
+            <div class="docente-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+            <div class="docente-stat-info">
+              <div class="docente-stat-value" id="stat-puntaje-promedio">0</div>
+              <div class="docente-stat-label">Puntaje promedio</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lista de estudiantes -->
+      <section class="docente-section">
+        <h2 class="section-title">Estudiantes Registrados</h2>
+        <div class="docente-filtros">
+          <input 
+            type="text" 
+            id="filtro-estudiantes" 
+            class="form-input" 
+            placeholder="Buscar estudiante por nombre..."
+            aria-label="Buscar estudiante"
+          />
+        </div>
+        <div id="estudiantes-list" class="estudiantes-list">
+          <div class="estudiantes-empty">
+            <p>No hay estudiantes registrados aún</p>
+            <p class="estudiantes-empty-hint">Los estudiantes aparecerán aquí cuando se registren</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detalle de estudiante (se muestra al hacer clic) -->
+      <section id="estudiante-detalle-section" class="docente-section hidden">
+        <div class="estudiante-detalle-header">
+          <h2 class="section-title" id="estudiante-detalle-nombre">Detalle del Estudiante</h2>
+          <button id="cerrar-detalle-btn" class="btn-secondary btn-small">✕ Cerrar</button>
+        </div>
+        
+        <div class="estudiante-detalle-content">
+          <!-- Información académica -->
+          <div class="detalle-subsection">
+            <h3 class="subsection-title">Información Académica</h3>
+            <div class="detalle-info">
+              <div class="detalle-item">
+                <span class="detalle-label">Universidad:</span>
+                <span class="detalle-value" id="detalle-universidad">-</span>
+              </div>
+              <div class="detalle-item">
+                <span class="detalle-label">Carrera:</span>
+                <span class="detalle-value" id="detalle-carrera">-</span>
+              </div>
+              <div class="detalle-item">
+                <span class="detalle-label">Zona:</span>
+                <span class="detalle-value" id="detalle-zona">-</span>
+              </div>
+              <div class="detalle-item">
+                <span class="detalle-label">Fecha de registro:</span>
+                <span class="detalle-value" id="detalle-fecha-registro">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estadísticas -->
+          <div class="detalle-subsection">
+            <h3 class="subsection-title">Estadísticas</h3>
+            <div class="detalle-stats">
+              <div class="detalle-stat-item">
+                <span class="detalle-stat-label">Puntaje acumulado:</span>
+                <span class="detalle-stat-value" id="detalle-puntaje">0</span>
+              </div>
+              <div class="detalle-stat-item">
+                <span class="detalle-stat-label">Acompañamientos:</span>
+                <span class="detalle-stat-value" id="detalle-acompanamientos">0</span>
+              </div>
+              <div class="detalle-stat-item">
+                <span class="detalle-stat-label">Calificación promedio:</span>
+                <span class="detalle-stat-value" id="detalle-calificacion">0.0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Historial de actividades -->
+          <div class="detalle-subsection">
+            <h3 class="subsection-title">Historial de Actividades</h3>
+            <div id="detalle-historial" class="historial-detalle">
+              <div class="historial-empty">
+                <p>No hay actividades registradas</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comentarios de adultos mayores -->
+          <div class="detalle-subsection">
+            <h3 class="subsection-title">Comentarios de Adultos Mayores</h3>
+            <div id="detalle-comentarios" class="comentarios-list">
+              <div class="comentarios-empty">
+                <p>No hay comentarios aún</p>
+                <p class="comentarios-empty-hint">Los comentarios aparecerán cuando los adultos mayores califiquen</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vista general de actividades -->
+      <section class="docente-section">
+        <h2 class="section-title">Actividades Recientes</h2>
+        <div id="actividades-recientes" class="actividades-list">
+          <div class="actividades-empty">
+            <p>No hay actividades recientes</p>
+            <p class="actividades-empty-hint">Las actividades de los estudiantes aparecerán aquí</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="src/components/icons.js"></script>
+  <script src="src/components/colibri-guide.js"></script>
+  <script src="src/components/bottom-nav.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

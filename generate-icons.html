@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Iconos PWA</title>
+</head>
+<body>
+  <h1>Generador de Iconos para PulseVision PWA</h1>
+  <p>Este archivo genera los iconos necesarios para la PWA desde el logo existente.</p>
+  
+  <canvas id="canvas192" width="192" height="192" style="border: 1px solid #ccc; margin: 10px;"></canvas>
+  <canvas id="canvas512" width="512" height="512" style="border: 1px solid #ccc; margin: 10px;"></canvas>
+  
+  <br>
+  <button onclick="generateIcons()">Generar Iconos</button>
+  <button onclick="downloadIcon(192)">Descargar 192x192</button>
+  <button onclick="downloadIcon(512)">Descargar 512x512</button>
+  
+  <script>
+    const logo = new Image();
+    logo.src = './assets/images/colibri-logo.png';
+    logo.onload = function() {
+      generateIcons();
+    };
+    
+    function generateIcons() {
+      // Generar icono 192x192
+      const canvas192 = document.getElementById('canvas192');
+      const ctx192 = canvas192.getContext('2d');
+      
+      // Fondo turquesa
+      ctx192.fillStyle = '#1FA6A3';
+      ctx192.fillRect(0, 0, 192, 192);
+      
+      // Dibujar logo centrado
+      const scale192 = Math.min(192 / logo.width, 192 / logo.height) * 0.8;
+      const x192 = (192 - logo.width * scale192) / 2;
+      const y192 = (192 - logo.height * scale192) / 2;
+      ctx192.drawImage(logo, x192, y192, logo.width * scale192, logo.height * scale192);
+      
+      // Generar icono 512x512
+      const canvas512 = document.getElementById('canvas512');
+      const ctx512 = canvas512.getContext('2d');
+      
+      // Fondo turquesa
+      ctx512.fillStyle = '#1FA6A3';
+      ctx512.fillRect(0, 0, 512, 512);
+      
+      // Dibujar logo centrado
+      const scale512 = Math.min(512 / logo.width, 512 / logo.height) * 0.8;
+      const x512 = (512 - logo.width * scale512) / 2;
+      const y512 = (512 - logo.height * scale512) / 2;
+      ctx512.drawImage(logo, x512, y512, logo.width * scale512, logo.height * scale512);
+    }
+    
+    function downloadIcon(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const link = document.createElement('a');
+      link.download = `icon-${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
+
