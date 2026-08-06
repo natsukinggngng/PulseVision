@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <meta name="theme-color" content="#1FA6A3" />
   <meta name="description" content="Conectando corazones, creando compañía" />
   <title>PulseVision</title>
+
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
@@ -39,6 +41,7 @@
   <!-- Pantalla de Selección de Rol (oculta inicialmente) -->
   <div id="role-selection" class="role-selection hidden">
     <div class="role-content">
+
       <h1 class="welcome-title">¿Cómo te gustaría ingresar hoy?</h1>
       <div class="role-buttons">
         <button class="role-btn" data-role="adulto-mayor">
@@ -53,6 +56,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- ============================================
        FLUJO ADULTO MAYOR
@@ -174,10 +178,6 @@
 
     <div class="page-content">
       <div class="home-header">
-        <button id="volver-inicio-adulto-btn" class="btn-back">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          <span>Volver</span>
-        </button>
         <h1 class="home-title">¿Qué tipo de ayuda necesitas?</h1>
       </div>
 
@@ -226,6 +226,10 @@
   <!-- Pantalla: Voluntarios Disponibles -->
   <div id="voluntarios-disponibles" class="page-container hidden">
     <div class="page-header">
+      <button id="volver-ayuda-btn" class="btn-back">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <span>Volver</span>
+      </button>
       <h1 class="page-title" id="voluntarios-titulo">Personas disponibles para acompañarte</h1>
       <p class="page-subtitle" id="voluntarios-subtitulo">Elige con quién te sientas más cómodo o cómoda</p>
     </div>
@@ -544,10 +548,6 @@
 
     <div class="page-content">
       <div class="home-header">
-        <button id="volver-inicio-uni-btn" class="btn-back">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          <span>Volver</span>
-        </button>
         <h1 class="home-title">Solicitudes de acompañamiento</h1>
         <p class="home-subtitle">Personas que esperan apoyo</p>
       </div>
@@ -955,10 +955,6 @@
   <!-- Panel Administrativo del Docente -->
   <div id="docente-panel" class="page-container hidden">
     <div class="docente-header">
-      <button id="volver-inicio-docente-btn" class="btn-back">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        <span>Volver</span>
-      </button>
       <h1 class="page-title">Seguimiento de acompañamientos</h1>
       <p class="page-subtitle">Supervisión y validación de actividades</p>
     </div>
@@ -1102,9 +1098,7 @@
   <script src="src/components/icons.js"></script>
   <script src="src/components/colibri-guide.js"></script>
   <script src="src/components/bottom-nav.js"></script>
-  <script src="src/components/modal.js"></script>
-  <script src="src/components/navigation.js"></script>
-  <script src="src/components/back-button.js"></script>
   <script src="main.js"></script>
 </body>
+
 </html>

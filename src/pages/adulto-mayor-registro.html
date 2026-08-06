@@ -14,6 +14,51 @@
   </div>
 
   <form id="registro-form" class="registro-form">
+<!-- Correo electrónico -->
+<div class="form-group">
+  <label for="email" class="form-label">Correo electrónico *</label>
+  <input 
+    type="email" 
+    id="email" 
+    name="email" 
+    class="form-input" 
+    placeholder="ejemplo@gmail.com"
+    required
+    aria-required="true"
+  />
+  <span class="form-error" id="error-email"></span>
+</div>
+
+<!-- Contraseña -->
+<div class="form-group">
+  <label for="password" class="form-label">Contraseña *</label>
+  <input 
+    type="password" 
+    id="password" 
+    name="password" 
+    class="form-input" 
+    placeholder="Mínimo 6 caracteres"
+    minlength="6"
+    required
+    aria-required="true"
+  />
+  <span class="form-error" id="error-password"></span>
+</div>
+
+<!-- Confirmar contraseña -->
+<div class="form-group">
+  <label for="confirm-password" class="form-label">Confirmar contraseña *</label>
+  <input 
+    type="password" 
+    id="confirm-password" 
+    name="confirmPassword" 
+    class="form-input" 
+    placeholder="Repite tu contraseña"
+    required
+    aria-required="true"
+  />
+  <span class="form-error" id="error-confirm-password"></span>
+</div>
     <!-- Nombre -->
     <div class="form-group">
       <label for="nombre" class="form-label">Nombre completo *</label>

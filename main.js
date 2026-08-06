@@ -1,3 +1,6 @@
+import { auth, db } from './src/firebase.js';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 /**
  * PULSEVISION - Lógica principal de la aplicación
  * Maneja la transición del splash screen, selección de roles y navegación
@@ -11,9 +14,7 @@ const AppState = {
   colibriGuide: null,
   bottomNav: null,
   voluntarioSeleccionado: null, // Voluntario seleccionado para solicitud
-  tipoAyudaSeleccionado: null,  // Tipo de ayuda seleccionado
-  modal: null,                   // Instancia del sistema de modales
-  navigation: null               // Instancia del sistema de navegación
+  tipoAyudaSeleccionado: null   // Tipo de ayuda seleccionado
 };
 
 // Registrar Service Worker para PWA
@@ -31,18 +32,6 @@ if ('serviceWorker' in navigator) {
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
-  // Inicializar sistema de modales
-  if (typeof Modal !== 'undefined') {
-    AppState.modal = new Modal();
-    window.modalInstance = AppState.modal;
-  }
-  
-  // Inicializar sistema de navegación
-  if (typeof NavigationManager !== 'undefined') {
-    AppState.navigation = new NavigationManager();
-    window.navigationManager = AppState.navigation;
-  }
-  
   // Referencias a los elementos principales
   const splashScreen = document.getElementById('splash-screen');
   const roleSelection = document.getElementById('role-selection');
@@ -119,19 +108,16 @@ document.addEventListener('DOMContentLoaded', function() {
    * Inicializa el flujo del Adulto Mayor
    */
   function initAdultoMayorFlow() {
-    // Verificar si hay sesión activa
-    const sesionActiva = localStorage.getItem('adultoMayorSesionActiva');
+    // Verificar si el usuario ya está registrado
     const userData = localStorage.getItem('adultoMayorData');
     
-    // Solo entrar al home si hay sesión activa Y datos del usuario
-    if (sesionActiva === 'true' && userData) {
-      // Usuario con sesión activa, ir al home
+    if (userData) {
+      // Usuario ya registrado, ir al home
       AppState.userData = JSON.parse(userData);
-      AppState.currentRole = 'adulto-mayor';
       showPage('adulto-mayor-home');
       initAdultoMayorHome();
     } else {
-      // No hay sesión activa, mostrar formulario de registro
+      // Usuario no registrado, mostrar formulario de registro
       showPage('adulto-mayor-registro');
       initAdultoMayorRegistro();
     }
@@ -171,10 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       AppState.userData = userData;
       localStorage.setItem('adultoMayorData', JSON.stringify(userData));
-      
-      // Marcar sesión como activa al registrarse
-      localStorage.setItem('adultoMayorSesionActiva', 'true');
-      AppState.currentRole = 'adulto-mayor';
       
       // Mostrar colibrí de confirmación de registro (momento emocional)
       const colibriWrapper = document.getElementById('colibri-guide-wrapper');
@@ -247,18 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar barra de navegación inferior
     initBottomNavigation('bottom-nav-container', 'home');
-    
-    // Botón "Volver" - reinicio suave a la pantalla inicial
-    const volverBtn = document.getElementById('volver-inicio-adulto-btn');
-    if (volverBtn) {
-      // Remover listeners previos
-      const newVolverBtn = volverBtn.cloneNode(true);
-      volverBtn.parentNode.replaceChild(newVolverBtn, volverBtn);
-      
-      document.getElementById('volver-inicio-adulto-btn').addEventListener('click', function() {
-        softReset();
-      });
-    }
     
     // Botón principal de ayuda - actualizar estado inicial
     actualizarEstadoBotonConfirmar();
@@ -345,82 +315,19 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   /**
-   * Función para realizar un "reinicio suave" de la aplicación
-   * Muestra el splash screen y luego la pantalla de selección de rol
-   * NO recarga la página, usa navegación interna
-   */
-  function softReset() {
-    // Ocultar todas las páginas
-    document.querySelectorAll('.page-container').forEach(page => {
-      page.classList.add('hidden');
-    });
-    
-    // Ocultar selección de rol
-    const roleSelection = document.getElementById('role-selection');
-    if (roleSelection) {
-      roleSelection.classList.add('hidden');
-    }
-    
-    // Mostrar splash screen
-    const splashScreen = document.getElementById('splash-screen');
-    if (splashScreen) {
-      splashScreen.classList.remove('hidden');
-      splashScreen.style.opacity = '1';
-      splashScreen.style.transition = 'opacity 0.5s ease-in';
-      
-      // Después de 2.5 segundos, mostrar selección de rol
-      setTimeout(function() {
-        // Fade out del splash screen
-        splashScreen.style.opacity = '0';
-        splashScreen.style.transition = 'opacity 0.5s ease-out';
-        
-        // Después de la animación de fade out, ocultar splash y mostrar selección de rol
-        setTimeout(function() {
-          splashScreen.classList.add('hidden');
-          if (roleSelection) {
-            roleSelection.classList.remove('hidden');
-          }
-          
-          // Limpiar estado de la aplicación
-          AppState.currentRole = null;
-          AppState.currentPage = null;
-          
-          // Limpiar historial de navegación
-          if (AppState.navigation) {
-            AppState.navigation.clearHistory();
-          }
-        }, 500); // Esperar a que termine la animación de fade out
-      }, 2500); // 2.5 segundos de visualización del splash
-    }
-  }
-
-  /**
    * Muestra una página específica y oculta las demás
    */
   function showPage(pageId) {
-    // Agregar al historial de navegación
-    if (AppState.navigation) {
-      AppState.navigation.pushState(pageId, pageId);
-    }
-    
     // Ocultar todas las páginas
     document.querySelectorAll('.page-container').forEach(page => {
       page.classList.add('hidden');
     });
-    
-    // Ocultar selección de rol si no es la página solicitada
-    const roleSelection = document.getElementById('role-selection');
-    if (roleSelection && pageId !== 'role-selection') {
-      roleSelection.classList.add('hidden');
-    }
     
     // Mostrar la página solicitada
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
       targetPage.classList.remove('hidden');
       AppState.currentPage = pageId;
-      // NO agregar botones de retroceso automáticamente
-      // Solo se mostrarán en las vistas específicas definidas en el HTML
     }
   }
 
@@ -454,9 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar que se haya seleccionado un voluntario
     if (!AppState.voluntarioSeleccionado || !AppState.tipoAyudaSeleccionado) {
-      if (AppState.modal) {
-        AppState.modal.showAlert('Por favor, selecciona primero un tipo de ayuda y un voluntario.');
-      }
+      alert('Por favor, selecciona primero un tipo de ayuda y un voluntario.');
       return;
     }
     
@@ -469,9 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Obtener datos del adulto mayor
     const adultoMayor = AppState.userData;
     if (!adultoMayor) {
-      if (AppState.modal) {
-        AppState.modal.showAlert('Error: No se encontraron tus datos. Por favor, regístrate nuevamente.');
-      }
+      alert('Error: No se encontraron tus datos. Por favor, regístrate nuevamente.');
       if (pedirAyudaBtn) {
         pedirAyudaBtn.disabled = false;
         pedirAyudaBtn.classList.remove('btn-disabled');
@@ -539,10 +442,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Actualizar estado del botón
     actualizarEstadoBotonConfirmar();
     
-    // Mostrar mensaje usando modal interno
-    if (AppState.modal) {
-      AppState.modal.showAlert('Tu solicitud ya fue enviada. En breve alguien se pondrá en contacto contigo.');
-    }
+    // Mostrar UN SOLO mensaje claro y empático
+    alert('Tu solicitud ya fue enviada.\nEn breve alguien se pondrá en contacto contigo.');
     
     // Rehabilitar botón después de un breve delay
     setTimeout(() => {
@@ -574,6 +475,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Actualizar título
     document.getElementById('voluntarios-titulo').textContent = 'Personas disponibles para acompañarte';
     document.getElementById('voluntarios-subtitulo').textContent = 'Elige con quién te sientas más cómodo o cómoda';
+    
+    // Botón volver (remover listeners previos)
+    const volverBtn = document.getElementById('volver-ayuda-btn');
+    const newVolverBtn = volverBtn.cloneNode(true);
+    volverBtn.parentNode.replaceChild(newVolverBtn, volverBtn);
+    newVolverBtn.addEventListener('click', function() {
+      showPage('adulto-mayor-home');
+      initAdultoMayorHome();
+    });
     
     // Cargar y filtrar voluntarios
     cargarVoluntariosFiltrados(tipoAyuda);
@@ -665,10 +575,8 @@ document.addEventListener('DOMContentLoaded', function() {
     AppState.voluntarioSeleccionado = voluntarioId;
     AppState.tipoAyudaSeleccionado = tipoAyuda;
     
-    // Mostrar mensaje de confirmación usando modal interno
-    if (AppState.modal) {
-      AppState.modal.showAlert('Has elegido a esta persona para acompañarte. Cuando estés listo, puedes enviar la solicitud.');
-    }
+    // Mostrar mensaje de confirmación
+    alert('Has elegido a esta persona para acompañarte.\nCuando estés listo, puedes enviar la solicitud.');
     
     // Volver al home
     showPage('adulto-mayor-home');
@@ -1080,11 +988,8 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Elimina una foto del álbum compartido
    */
-  async function eliminarFotoAlbum(photoId) {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm('¿Estás seguro que quieres eliminar esta foto?');
-    if (!confirmed) {
+  function eliminarFotoAlbum(photoId) {
+    if (!confirm('¿Estás seguro que quieres eliminar esta foto?')) {
       return;
     }
     
@@ -1203,25 +1108,19 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Cambia el acompañante
    */
-  async function cambiarAcompanante() {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm('¿Estás seguro de que deseas cambiar de acompañante?');
-    if (confirmed) {
+  function cambiarAcompanante() {
+    if (confirm('¿Estás seguro de que deseas cambiar de acompañante?')) {
       localStorage.removeItem('adultoMayorVoluntario');
       loadPerfilData();
-      AppState.modal.showAlert('Tu solicitud para cambiar de acompañante ha sido registrada.');
+      alert('Tu solicitud para cambiar de acompañante ha sido registrada.');
     }
   }
 
   /**
    * Anula el acompañante - Corregido para desvincular correctamente
    */
-  async function anularAcompanante() {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm('¿Deseas finalizar este acompañamiento?');
-    if (confirmed) {
+  function anularAcompanante() {
+    if (confirm('¿Deseas finalizar este acompañamiento?')) {
       // Obtener datos del voluntario actual
       const voluntario = JSON.parse(localStorage.getItem('adultoMayorVoluntario') || 'null');
       
@@ -1285,9 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
         AppState.colibriGuide.showMessage('accompaniment-completed');
       }
       
-      if (AppState.modal) {
-        AppState.modal.showAlert('El acompañamiento ha terminado. Estamos aquí si necesitas volver a pedir apoyo.');
-      }
+      alert('El acompañamiento ha terminado.\nEstamos aquí si necesitas volver a pedir apoyo.');
     }
   }
 
@@ -1311,18 +1208,14 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   function enviarCalificacion() {
     if (selectedRating === 0) {
-      if (AppState.modal) {
-        AppState.modal.showAlert('Por favor, selecciona una calificación');
-      }
+      alert('Por favor, selecciona una calificación');
       return;
     }
     
     // Obtener datos del voluntario actual
     const voluntario = JSON.parse(localStorage.getItem('adultoMayorVoluntario') || 'null');
     if (!voluntario) {
-      if (AppState.modal) {
-        AppState.modal.showAlert('Error: No se encontró información del voluntario');
-      }
+      alert('Error: No se encontró información del voluntario');
       return;
     }
     
@@ -1425,9 +1318,7 @@ document.addEventListener('DOMContentLoaded', function() {
       AppState.colibriGuide.showMessage('completed');
     }
     
-    if (AppState.modal) {
-      AppState.modal.showAlert('¡Gracias por tu calificación! El puntaje del voluntario ha sido actualizado.');
-    }
+    alert('¡Gracias por tu calificación! El puntaje del voluntario ha sido actualizado.');
     
     // Resetear formulario
     selectedRating = 0;
@@ -1437,17 +1328,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   /**
    * Cierra la sesión del usuario actual
-   * Mantiene los datos y permite volver a ingresar
+   * Limpia el estado y redirige a la pantalla de selección de rol
    */
-  async function cerrarSesion() {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm('¿Estás seguro de que deseas cerrar sesión?');
-    if (confirmed) {
-      // Guardar el rol actual antes de limpiarlo
-      const currentRole = AppState.currentRole;
-      
-      // Limpiar estado de sesión (mantiene datos en localStorage)
+  function cerrarSesion() {
+    if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+      // Limpiar estado de sesión
       AppState.currentRole = null;
       AppState.currentPage = null;
       AppState.userData = null;
@@ -1461,99 +1346,16 @@ document.addEventListener('DOMContentLoaded', function() {
         AppState.chatInterval = null;
       }
       
-      // Marcar sesión como inactiva según el rol actual
-      // NO eliminar los datos del usuario, solo la sesión activa
-      if (currentRole === 'adulto-mayor') {
-        localStorage.removeItem('adultoMayorSesionActiva');
-      } else if (currentRole === 'universitario') {
-        localStorage.removeItem('universitarioSesionActiva');
+      // Limpiar localStorage (excepto docenteData si es docente)
+      const docenteData = localStorage.getItem('docenteData');
+      localStorage.clear();
+      if (docenteData) {
+        localStorage.setItem('docenteData', docenteData);
       }
       
-      // Limpiar historial de navegación
-      if (AppState.navigation) {
-        AppState.navigation.clearHistory();
-      }
-      
-      // Ocultar todas las páginas
-      document.querySelectorAll('.page-container').forEach(page => {
-        page.classList.add('hidden');
-      });
-      
-      // Mostrar selección de rol
-      const roleSelection = document.getElementById('role-selection');
-      if (roleSelection) {
-        roleSelection.classList.remove('hidden');
-      }
-    }
-  }
-
-  /**
-   * Elimina la cuenta del usuario actual
-   * Elimina TODOS los datos y cierra la sesión automáticamente
-   */
-  async function eliminarCuenta() {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm(
-      '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer y eliminará todos tus datos.',
-      'Eliminar cuenta'
-    );
-    
-    if (confirmed) {
-      // Guardar el rol actual antes de limpiarlo
-      const currentRole = AppState.currentRole;
-      
-      // Eliminar datos del usuario según el rol
-      if (currentRole === 'adulto-mayor') {
-        localStorage.removeItem('adultoMayorData');
-        localStorage.removeItem('adultoMayorSolicitudes');
-        localStorage.removeItem('adultoMayorVoluntario');
-        localStorage.removeItem('adultoMayorSesionActiva');
-        // Eliminar del álbum compartido
-        const album = JSON.parse(localStorage.getItem('albumRecuerdos') || '[]');
-        const albumFiltrado = album.filter(foto => foto.adultoMayorId !== AppState.userData?.nombre);
-        localStorage.setItem('albumRecuerdos', JSON.stringify(albumFiltrado));
-      } else if (currentRole === 'universitario') {
-        localStorage.removeItem('universitarioData');
-        localStorage.removeItem('universitarioAcompanamientos');
-        localStorage.removeItem('universitarioSesionActiva');
-        // Eliminar del álbum compartido
-        const album = JSON.parse(localStorage.getItem('albumRecuerdos') || '[]');
-        const albumFiltrado = album.filter(foto => foto.voluntarioId !== AppState.userData?.nombre);
-        localStorage.setItem('albumRecuerdos', JSON.stringify(albumFiltrado));
-      }
-      
-      // Limpiar estado
-      AppState.currentRole = null;
-      AppState.currentPage = null;
-      AppState.userData = null;
-      AppState.voluntarioSeleccionado = null;
-      AppState.tipoAyudaSeleccionado = null;
-      AppState.chatId = null;
-      
-      // Limpiar intervalos
-      if (AppState.chatInterval) {
-        clearInterval(AppState.chatInterval);
-        AppState.chatInterval = null;
-      }
-      
-      // Limpiar historial de navegación
-      if (AppState.navigation) {
-        AppState.navigation.clearHistory();
-      }
-      
-      // Ocultar todas las páginas
-      document.querySelectorAll('.page-container').forEach(page => {
-        page.classList.add('hidden');
-      });
-      
-      // Mostrar selección de rol
-      roleSelection.classList.remove('hidden');
-      
-      // Mostrar mensaje de confirmación
-      if (AppState.modal) {
-        AppState.modal.showAlert('Tu cuenta ha sido eliminada exitosamente.');
-      }
+      // Redirigir a pantalla de selección de rol
+      showPage('role-selection');
+      document.getElementById('role-selection').classList.remove('hidden');
     }
   }
 
@@ -1567,19 +1369,16 @@ document.addEventListener('DOMContentLoaded', function() {
    * Inicializa el flujo del Universitario
    */
   function initUniversitarioFlow() {
-    // Verificar si hay sesión activa
-    const sesionActiva = localStorage.getItem('universitarioSesionActiva');
+    // Verificar si el usuario ya está registrado
     const userData = localStorage.getItem('universitarioData');
     
-    // Solo entrar al home si hay sesión activa Y datos del usuario
-    if (sesionActiva === 'true' && userData) {
-      // Usuario con sesión activa, ir al home
+    if (userData) {
+      // Usuario ya registrado, ir al home
       AppState.userData = JSON.parse(userData);
-      AppState.currentRole = 'universitario';
       showPage('universitario-home');
       initUniversitarioHome();
     } else {
-      // No hay sesión activa, mostrar formulario de registro
+      // Usuario no registrado, mostrar formulario de registro
       showPage('universitario-registro');
       initUniversitarioRegistro();
     }
@@ -1623,10 +1422,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       AppState.userData = userData;
       localStorage.setItem('universitarioData', JSON.stringify(userData));
-      
-      // Marcar sesión como activa al registrarse
-      localStorage.setItem('universitarioSesionActiva', 'true');
-      AppState.currentRole = 'universitario';
       
       // Mostrar colibrí de confirmación de registro (momento emocional)
       const colibriWrapper = document.getElementById('colibri-guide-wrapper-uni');
@@ -1704,18 +1499,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar barra de navegación inferior
     initBottomNavigationUni('bottom-nav-container-uni', 'solicitudes');
-    
-    // Botón "Volver" - reinicio suave a la pantalla inicial
-    const volverBtn = document.getElementById('volver-inicio-uni-btn');
-    if (volverBtn) {
-      // Remover listeners previos
-      const newVolverBtn = volverBtn.cloneNode(true);
-      volverBtn.parentNode.replaceChild(newVolverBtn, volverBtn);
-      
-      document.getElementById('volver-inicio-uni-btn').addEventListener('click', function() {
-        softReset();
-      });
-    }
     
     // Filtro de zona
     const filtroZona = document.getElementById('filtro-zona');
@@ -1940,9 +1723,7 @@ document.addEventListener('DOMContentLoaded', function() {
       AppState.colibriGuide.showMessage('accompaniment-accepted');
     }
     
-    if (AppState.modal) {
-      AppState.modal.showAlert('Has aceptado este acompañamiento. Ya puedes comunicarte a través del chat.');
-    }
+    alert('Has aceptado este acompañamiento.\nYa puedes comunicarte a través del chat.');
     
     // Recargar solicitudes y acompañamientos
     loadSolicitudesDisponibles();
@@ -1952,11 +1733,8 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Rechaza una solicitud
    */
-  window.rechazarSolicitud = async function(solicitudId) {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm('¿Estás seguro de que deseas rechazar esta solicitud?');
-    if (confirmed) {
+  window.rechazarSolicitud = function(solicitudId) {
+    if (confirm('¿Estás seguro de que deseas rechazar esta solicitud?')) {
       // Obtener la solicitud para actualizar su estado
       const todasSolicitudesDisponibles = JSON.parse(localStorage.getItem('solicitudesDisponibles') || '[]');
       const solicitud = todasSolicitudesDisponibles.find(s => s.id === solicitudId);
@@ -2439,11 +2217,8 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Elimina una foto del álbum compartido del universitario
    */
-  async function eliminarFotoAlbumUni(photoId) {
-    if (!AppState.modal) return;
-    
-    const confirmed = await AppState.modal.showConfirm('¿Estás seguro que quieres eliminar esta foto?');
-    if (!confirmed) {
+  function eliminarFotoAlbumUni(photoId) {
+    if (!confirm('¿Estás seguro que quieres eliminar esta foto?')) {
       return;
     }
     
@@ -3063,18 +2838,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurar que el panel esté visible
     panel.classList.remove('hidden');
     
-    // Botón "Volver" - reinicio suave a la pantalla inicial
-    const volverBtn = document.getElementById('volver-inicio-docente-btn');
-    if (volverBtn) {
-      // Remover listeners previos
-      const newVolverBtn = volverBtn.cloneNode(true);
-      volverBtn.parentNode.replaceChild(newVolverBtn, volverBtn);
-      
-      document.getElementById('volver-inicio-docente-btn').addEventListener('click', function() {
-        softReset();
-      });
-    }
-    
     // Cargar resumen general
     loadDocenteResumen();
     
@@ -3092,12 +2855,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Botón cerrar detalle
     document.getElementById('cerrar-detalle-btn')?.addEventListener('click', function() {
       document.getElementById('estudiante-detalle-section').classList.add('hidden');
-      
-      // Mostrar botón "Volver" cuando se oculta el detalle
-      const volverBtn = document.getElementById('volver-inicio-docente-btn');
-      if (volverBtn) {
-        volverBtn.style.display = 'flex';
-      }
     });
     
     // Cargar actividades recientes
@@ -3291,12 +3048,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const estudiante = estudiantes.find(e => e.nombre === nombreEstudiante);
     
     if (!estudiante) return;
-    
-    // Ocultar botón "Volver" cuando se muestra el detalle
-    const volverBtn = document.getElementById('volver-inicio-docente-btn');
-    if (volverBtn) {
-      volverBtn.style.display = 'none';
-    }
     
     // Mostrar sección de detalle
     const detalleSection = document.getElementById('estudiante-detalle-section');
