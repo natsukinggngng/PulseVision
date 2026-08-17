@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PulseVision</string>
+    <string name="title_activity_main">PulseVision</string>
+    <string name="package_name">com.pulsevision.app</string>
+    <string name="custom_url_scheme">com.pulsevision.app</string>
+</resources>
